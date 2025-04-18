@@ -1,0 +1,42 @@
+{% extends 'home.html' %}
+{% load humanize %}
+
+
+{% block content %}
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Resultados de Búsqueda</h2>
+
+    {% if resultados %}
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Precio</th>
+            {% if fecha %}<th>Fecha</th>{% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for vuelo in resultados %}
+            <tr>
+              <td>{{ vuelo.origen }}</td>
+              <td>{{ vuelo.destino }}</td>
+              <td>{{ vuelo.precio|intcomma }} COP</td>
+              {% if fecha %}<td>{{ fecha }}</td>{% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="alert alert-warning text-center">
+        No se encontraron vuelos para los datos ingresados.
+      </div>
+    {% endif %}
+
+    <div class="text-center mt-3">
+      <a href="{% url 'home' %}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+  </div>
+{% endblock %}
+
+

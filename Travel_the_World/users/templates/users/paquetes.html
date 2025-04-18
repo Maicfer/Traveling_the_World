@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Paquetes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
+      background-size: cover;
+      background-attachment: fixed;
+      color: white;
+    }
+    .card {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+    }
+    .floating-home-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="text-center mb-4">🧳 Paquetes de Viaje</h1>
+    <p class="text-center">Explora paquetes todo incluido que combinan vuelo, hotel y experiencias.</p>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-5">
+        <div class="card p-3">
+          <h5>Despegar</h5>
+          <p>Arma tu paquete a medida con vuelo, hotel y más.</p>
+          <a href="https://www.despegar.com.co" class="btn btn-info" target="_blank">Ir a Despegar</a>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="card p-3">
+          <h5>BestDay</h5>
+          <p>Ofertas en paquetes turísticos por todo el mundo.</p>
+          <a href="https://www.bestday.com.co" class="btn btn-warning" target="_blank">Ir a BestDay</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a href="{% url 'home' %}" class="btn btn-warning floating-home-button">🏠 Inicio</a>
+</body>
+</html>

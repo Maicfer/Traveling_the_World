@@ -1,0 +1,73 @@
+<!-- templates/consultar/reseñas.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reseñas de Usuarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1xh9OzG3AJHwVBhBSmFAIfD9EwvHQWpVFoQ&s");
+      background-size: cover;
+    }
+    .glass {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 30px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="d-flex justify-content-end mt-3">
+    <a href="{% url 'home' %}" class="btn btn-outline-primary">🏠 Inicio</a>
+  </div>
+
+  <div class="glass shadow">
+    <h2 class="text-center mb-4">Reseñas de Viajeros</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Nombre:</label>
+        <input type="text" name="nombre" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Correo:</label>
+        <input type="email" name="correo" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Ciudad visitada:</label>
+        <input type="text" name="ciudad_visitada" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Comentario:</label>
+        <textarea name="comentario" class="form-control" rows="3" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-success">Enviar Reseña</button>
+    </form>
+  </div>
+
+  <div class="glass mt-5 shadow">
+    <h4 class="mb-4">Últimas opiniones</h4>
+    {% for r in reseñas %}
+      <div class="mb-4 border-bottom pb-2">
+        <strong>{{ r.nombre }}</strong> visitó <strong>{{ r.ciudad_visitada }}</strong> <br>
+        <small class="text-muted">{{ r.fecha|date:"d M Y, H:i" }}</small>
+        <p class="mt-2">{{ r.comentario }}</p>
+      </div>
+    {% empty %}
+      <p class="text-muted">Aún no hay reseñas disponibles.</p>
+    {% endfor %}
+  </div>
+</div>
+</body>
+</html>

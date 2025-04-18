@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil | Traveling The World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/foto-gratis/vista-3d-sol-cielo-avion_23-2150953581.jpg?semt=ais_hybrid&w=740');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .profile-header {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .profile-header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-info {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .profile-info h2 {
+            margin-bottom: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="{% static 'users/logo.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+            Traveling The World
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/destinos/">Destinos</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/mas_visitados/">Los más visitados</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Consultar</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/vuelos/">Vuelos</a></li>
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/hoteles/">Hoteles</a></li>
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/paquetes/">Paquetes</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/reseñas/">Reseñas</a></li>
+            </ul>
+            <div class="d-flex">
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'update_profile' %}">Editar perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'change_password' %}">Cambiar contraseña</a></li>
+                            <li>
+                                <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                                  {% csrf_token %}
+                                  <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; margin: 0;">
+                                    Cerrar sesión
+                                  </button>
+                                </form>
+                              </li>
+                              
+                        </ul>
+                    </div>
+                {% else %}
+                    <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Iniciar Sesión
+                    </button>
+                    <a href="{% url 'register' %}" class="btn btn-warning">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido del perfil -->
+<div class="container">
+    <div class="profile-header">
+        <h1>Bienvenid@, {{ user.username }}</h1>
+
+        <!-- Imagen de perfil -->
+        {% if user.profile.imagen %}
+            <img src="{{ user.profile.imagen.url }}" alt="Imagen de perfil">
+        {% else %}
+            <img src="https://via.placeholder.com/150" alt="Imagen de perfil por defecto">
+        {% endif %}
+    </div>
+
+    <div class="profile-info">
+        <h2>Información de Perfil</h2>
+        <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+    </div>
+
+    <!-- Botones para editar perfil y cambiar contraseña -->
+    <div class="text-center">
+        <a href="{% url 'update_profile' %}" class="btn btn-primary">Editar perfil</a>
+        <a href="{% url 'change_password' %}" class="btn btn-warning">Cambiar contraseña</a>
+    </div>
+
+    <!-- Mostrar imágenes subidas -->
+    <div class="card">
+        <div class="card-header">
+            Subir una nueva imagen de perfil
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'update_profile' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_imagen" class="form-label">Seleccionar imagen</label>
+                    <input type="file" class="form-control" id="id_imagen" name="imagen">
+                </div>
+                <button type="submit" class="btn btn-success">Subir imagen</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Iniciar Sesión -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="id_username" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="id_username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="id_password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="id_password" name="password" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Ingresar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>&copy; 2025 Traveling The World | Todos los derechos reservados.</p>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+
+
+

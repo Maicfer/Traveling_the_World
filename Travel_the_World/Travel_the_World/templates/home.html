@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Traveling The World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        .carousel-item {
+            height: 100vh;
+            min-height: 400px;
+            background: no-repeat center center scroll;
+            background-size: cover;
+        }
+        .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .main-content {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 2;
+        }
+        .footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        .logo-img {
+            height: 40px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="{% static 'users/logo.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+            Traveling The World
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/destinos/">Destinos</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/mas_visitados/">Los más visitados</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Consultar</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/vuelos/">Vuelos</a></li>
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/hoteles/">Hoteles</a></li>
+                        <li><a class="dropdown-item" href="http://localhost:8000/users/paquetes/">Paquetes</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="http://localhost:8000/users/reseñas/">Reseñas</a></li>
+            </ul>
+            <div class="d-flex">
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'update_profile' %}">Editar perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'change_password' %}">Cambiar contraseña</a></li>
+                            <li>
+                              <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; margin: 0;">
+                                  Cerrar sesión
+                                </button>
+                              </form>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Iniciar Sesión
+                    </button>
+                    <a href="{% url 'register' %}" class="btn btn-warning">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Modal de Iniciar Sesión -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="id_username" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="id_username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="id_password" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="id_password" name="password" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Ingresar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Carrusel de fondo -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+  <div class="carousel-inner">
+    <div class="carousel-item active" style="background-image: url('https://imagenes.eltiempo.com/files/image_1200_600/uploads/2020/03/29/5e815190c2d1e.jpeg');">
+      <div class="overlay"></div>
+    </div>
+    <div class="carousel-item" style="background-image: url('https://www.lavanguardia.com/files/og_thumbnail/uploads/2017/05/15/5fa3c5d7ef234.jpeg');">
+      <div class="overlay"></div>
+    </div>
+    <div class="carousel-item" style="background-image: url('https://img.freepik.com/fotos-premium/muro-occidental-kotel-muro-lamento-lugar-santo-ningun-pueblo-monte-templo-ciudad-antigua-jerusalen-israel_839035-1834564.jpg');">
+      <div class="overlay"></div>
+    </div>
+  </div>
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="main-content">
+  <h1 class="display-4">¡Bienvenido a Traveling The World! / Welcome to Traveling The World!</h1>
+  <p>Descubre destinos, reserva vuelos y comparte tus reseñas. / Discover destinations, book flights, and share your reviews.</p>
+</div>
+
+<!-- Buscador de vuelos -->
+<div class="container my-5">
+  <h2 class="text-center">Reservar tu Vuelo / Book your Flight</h2>
+  <form class="row g-3 justify-content-center" method="GET" action="{% url 'buscar_vuelos' %}">
+    <div class="col-md-3">
+      <input type="text" name="origen" class="form-control" placeholder="Origen / From">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="destino" class="form-control" placeholder="Destino / To">
+    </div>
+    <div class="col-md-2">
+      <input type="date" name="fecha" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Buscar / Search</button>
+    </div>
+  </form>
+</div>
+
+<!-- Reseñas destacadas -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Reseñas Destacadas / Featured Reviews</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Cancún, México</h5>
+          <p class="card-text">"Una experiencia inolvidable, playas cristalinas y comida deliciosa."</p>
+          <p class="text-muted">- Laura R.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Puedes agregar más reseñas aquí -->
+  </div>
+</div>
+
+<!-- Scripts necesarios para Bootstrap (estos activan el modal) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+

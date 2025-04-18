@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerrar Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTM25Qfn_qU51Kr1xtkZSFTnTZI5lfbuV42vQ&s');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card text-center shadow border border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h3>Sesión Cerrada</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="fs-5">Has cerrado sesión correctamente.</p>
+                        <p>Serás redirigido al inicio en unos segundos...</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <a href="{% url 'home' %}" class="btn btn-outline-danger">Ir ahora</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(function () {
+            window.location.href = "{% url 'home' %}";
+        }, 4000);  // 4 segundos
+    </script>
+
+</body>
+</html>
+
+
